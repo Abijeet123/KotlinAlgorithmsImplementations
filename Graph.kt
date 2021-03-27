@@ -14,6 +14,34 @@ var n : Int = 1024
 var visited = BooleanArray(n) { false }
 var adj = Array(n) { mutableListOf<Pair<Int,Int>>() }
 
+
+
+fun toLeaf(root : Int) : Int {
+    if(adj[root].size == 0) return 0
+    var max = 0
+    for (i in adj[root]){
+        max = maxOf(max, 1 + toLeaf(i.first))
+    }
+    return max
+}
+
+fun diameter() : Int{
+    var dia = 0
+    for (i in 0 until n){
+        var max1 = 0
+        var max2 = 0
+        for (j in adj[0]){
+            var t = 1 + toLeaf(j.first)
+            if (t > max1){
+                max2 = max1
+                max1 = t
+            }
+            dia = maxOf(dia, max1 + max2)
+        }
+    }
+    return dia
+}
+
 fun dfs(root : Int){
     if (visited[root]) return
     visited[root] = true
@@ -54,8 +82,11 @@ fun main(){
     for (i in 0 until q){
         val (a,b,c) = readInts()
         adj[a - 1].add(Pair(b - 1,c))
+        //adj[b - 1].add(Pair(a-1,c))
     }
-    val distance = dikstra(0)
-    for (i in distance)
-        println(i)
+//    val distance = dikstra(0)
+//    for (i in distance)
+//        println(i)
+    println(diameter())
+
 }
